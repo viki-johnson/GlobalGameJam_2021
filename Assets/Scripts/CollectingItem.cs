@@ -9,6 +9,8 @@ public class CollectingItem : MonoBehaviour
     public string holding;
     public bool atCounter;
     public Score _score;
+    public GameObject holdingItem;
+    public NewCustomer _newCustomer;
     
     
     private void Update() {
@@ -17,29 +19,41 @@ public class CollectingItem : MonoBehaviour
             // for picking up items 
             if(_crate != null)
             {
-                if(_crate.isFull && holding == "")
+                if(_crate.isFull && !holdingItem)
                 {
-                    holding = _crate.contents;
+                    // holding = _crate.contents;
+
+                    holdingItem = _crate.itemModel;
+                    holdingItem.transform.parent = this.transform;
+                    holdingItem.transform.localPosition = new Vector3(0,0,0);
+
                     _crate.isFull = false;
                 }
-                else if(!_crate.isFull && holding != "")
+                else if(!_crate.isFull && holdingItem)
                 {
-                    holding = "";
+                    // holding = "";
+
+                    holdingItem.transform.parent = _crate.transform;
+                    holdingItem.transform.localPosition = new Vector3(0,0,0);
+                    holdingItem = null;
+
                     _crate.isFull = true;
                 }
             }
 
             // for delivering
-            if(atCounter && holding != "")
+            if(atCounter && holdingItem)
             {
-                if(_customer.item == holding)
+
+                if(_customer.item == holdingItem.name)
                 {
                     Debug.Log("well done");
                     _score.rewards += 10;
                 } else {
                     Debug.Log("fail");
                 }
-                holding = "";
+                holdingItem = null;
+                _newCustomer.DeleteOld();
             }
         }
     }
@@ -56,6 +70,7 @@ public class CollectingItem : MonoBehaviour
         // for delivering items
         if(other.GetComponent<Customer>() == true)
         {
+            // _customer = other.GetComponent<Customer>();
             atCounter = true;
         }
 
@@ -74,7 +89,6 @@ public class CollectingItem : MonoBehaviour
         // for delivering items
         if(other.GetComponent<Customer>() == true)
         {
-            _customer = other.GetComponent<Customer>();
             atCounter = false;
         }
     }

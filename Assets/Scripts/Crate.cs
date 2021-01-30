@@ -9,6 +9,7 @@ public class Crate : MonoBehaviour
     [TextArea(5,10)] public string description;
     public Material full, empty, active;
     public MeshRenderer mesh;
+    public GameObject itemModel;
 
     private void Update() {
         if(isFull)
@@ -19,8 +20,10 @@ public class Crate : MonoBehaviour
             } else {
                 mesh.material = full;
             }
+            // itemModel.SetActive(true);
         } else {
             mesh.material = empty;
+            // itemModel.SetActive(false);
         }
     }
 
